@@ -1,6 +1,10 @@
 import art
 import random
 
+def deal_card() -> int:
+    cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+    return random.choice(cards)
+
 def print_players_cards(user_cards: list[int], computer_cards: list[int]):
     print(f"    Your cards: {user_cards}, current score: {sum(user_cards)}")
     print(f"    Computer's first card: {computer_cards[0]}")
@@ -21,30 +25,29 @@ def print_final_score(user_cards: list[int], computer_cards: list[int]):
     else:
         print("Draw")
 
-cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
-
 while input("Do you want to play a game of Blackjack? Type 'y' or 'n':") == "y":
 
-    user_cards = [random.choice(cards), random.choice(cards)]
-    computer_cards = [random.choice(cards)]
+    user_cards = [deal_card(), deal_card()]
+    computer_cards = [deal_card(), deal_card()]
 
+    # Clear screen
     print("\n" * 60, art.logo)
     print_players_cards(user_cards, computer_cards)
 
     # user's turn
     while sum(user_cards) <= 21 and input("Type 'y' to get another card, type 'n' to pass:") == "y":
-        user_cards.append(random.choice(cards))
+        user_cards.append(deal_card())
 
         if sum(user_cards) > 21 and 11 in user_cards:
-            index = user_cards.index(11)
-            user_cards[index] = 1
+            user_cards.remove(11)
+            user_cards.append(1)
 
         print_players_cards(user_cards, computer_cards)
 
     if sum(user_cards) <= 21:
         # computer's turn. Draw until score is 17 or more
         while sum(computer_cards) < 17:
-            computer_cards.append(random.choice(cards))
+            computer_cards += deal_card()
 
     print_final_score(user_cards, computer_cards)
 
