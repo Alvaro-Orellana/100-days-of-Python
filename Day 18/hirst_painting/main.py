@@ -1,30 +1,27 @@
 import colorgram
+import random
 from turtle import Turtle, Screen
 
-#colors = colorgram.extract('image.jpg', 30)
-#colors_tuples = [(color.rgb.r, color.rgb.g, color.rgb.b) for color in colors][3:]
-#print(colors_tuples)
+colors = colorgram.extract('image.jpg', 30)
+rgb_colors = [(color.rgb.r, color.rgb.g, color.rgb.b) for color in colors][5:]
 
-starting_coordinate = (-300,-300)
-circle_distance = 50
+(x_origin, y_origin) = (-300, -300)
+interdot_distance = 50
 
 screen = Screen()
+screen.colormode(255)
+
 turtle = Turtle()
 turtle.speed("fastest")
 turtle.penup()
-turtle.goto(starting_coordinate)
-turtle.pendown()
+turtle.hideturtle()
+turtle.goto((x_origin, y_origin))
 
 for i in range(1,11):
     for j in range(10):
-        turtle.circle(20)
-        turtle.penup()
-        turtle.goto(turtle.xcor() + circle_distance, turtle.ycor())
-        turtle.pendown()
+        turtle.dot(20, random.choice(rgb_colors))
+        turtle.goto(turtle.xcor() + interdot_distance, turtle.ycor())
 
-    turtle.penup()
-    turtle.goto(starting_coordinate[0], starting_coordinate[1] + circle_distance * i)
-    turtle.pendown()
-
+    turtle.goto(x_origin, y_origin + interdot_distance * i)
 
 screen.mainloop()
