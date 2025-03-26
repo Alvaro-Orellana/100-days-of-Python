@@ -1,4 +1,6 @@
 from turtle import Turtle
+from turtledemo.penrose import start
+
 
 class Snake:
 
@@ -7,29 +9,29 @@ class Snake:
     DIRECTIONS = {"right": 0, "up": 90, "left": 180, "down": 270} # turtle's module directions in degrees
 
     def __init__(self, color: str="white"):
-        self.snake: list[Turtle] = []
+        self.body: list[Turtle] = []
+        self.color: str = color
 
         # create initial snake
         for i in range(self.INITIAL_NUMBER_OF_CUBES):
             cube = Turtle("square")
-            cube.color(color)
+            cube.color(self.color)
             cube.penup()
             #puts the cubes horizontally next to each other
             cube.backward(self.CUBE_WIDTH * i)
-            self.snake.append(cube)
+            self.body.append(cube)
 
-        self.head = self.snake[len(self.snake) - 1]
+        self.head = self.body[0]
 
     def move(self):
         """first moves tail to the next cube's position and then moves the head"""
 
-        tail_length = len(self.snake) - 1
         # move tail
-        for index in range(tail_length):
+        for index in range(len(self.body) - 1, 0, -1):
             # move Nth cube to Nth+1 cube position
-            next_xcor = self.snake[index + 1].xcor()
-            next_ycor = self.snake[index + 1].ycor()
-            self.snake[index].goto(next_xcor, next_ycor)
+            next_xcor = self.body[index - 1].xcor()
+            next_ycor = self.body[index - 1].ycor()
+            self.body[index].goto(next_xcor, next_ycor)
 
         # move head
         self.head.forward(self.CUBE_WIDTH)
@@ -52,6 +54,7 @@ class Snake:
 
     def turn(self, direction: str):
         self.head.setheading(self.DIRECTIONS[direction])
+        self.head.forward(Snake.CUBE_WIDTH)
 
     def head_edge_coordinate(self) -> float:
         # xcor() and ycor() are in the center of a shape.
@@ -68,3 +71,12 @@ class Snake:
     def is_going_right(self) -> bool: return self.head.heading() == self.DIRECTIONS["right"]
     def is_going_up(self) -> bool: return self.head.heading() == self.DIRECTIONS["up"]
     def is_going_down(self) -> bool: return self.head.heading() == self.DIRECTIONS["down"]
+
+    def grow_tail(self):
+        new_square = Turtle("square")
+        new_square.color(self.color)
+        new_square.penup()
+        new_square.goto(self.body[0].xcor(), self.body[0].ycor())
+        new_square.setheading(self.body[0].heading())
+        new_square.back(self.CUBE_WIDTH)
+        self.body.insert(0, new_square)
