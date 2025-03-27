@@ -1,4 +1,3 @@
-import turtle
 from turtle import Screen, Turtle
 from snake import Snake
 from time import sleep
@@ -46,7 +45,7 @@ score = 0
 snake = Snake()
 screen = Screen()
 pen = Turtle(visible=False)
-food = Turtle("square")
+food = Turtle("circle")
 
 # setup screen
 screen.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
@@ -78,10 +77,8 @@ while True:
         snake.grow_tail()
 
     snake.move()
-
     pen.clear()
     pen.write(f"head x: {snake.head.xcor()} y: {snake.head.ycor()} | food x: {food.xcor()} y: {food.ycor()} \tscore: {score}")
-
     screen.update()
     sleep(DELAY_IN_SECONDS)
 
