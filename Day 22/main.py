@@ -1,9 +1,10 @@
 from turtle import Turtle, Screen
 from paddle import Paddle
+from ball import Ball
 from scoreboard import Scoreboard
-import random
 
-WIDTH = 600
+BALL_SPEED = 2
+WIDTH = 800
 HEIGHT = 600
 
 MIN_X_COORDINATE, MAX_X_COORDINATE = -WIDTH // 2, WIDTH // 2
@@ -26,26 +27,20 @@ def draw_middle_line():
         t.penup()
         t.forward(10)  # Leave a gap
 
-def ball_touches_wall(ball: Turtle, wall_name: str) -> bool:
-    if wall_name == "left": return ball.xcor() <= MIN_X_COORDINATE
-    if wall_name == "right": return ball.xcor() >= MAX_X_COORDINATE
-    if wall_name == "up": return ball.ycor() >= MAX_Y_COORDINATE
-    if wall_name == "down": return ball.ycor() <= MIN_Y_COORDINATE
+def ball_touches_left_or_right_wall(ball: Ball) -> bool:
+    return ball.xcor() <= MIN_X_COORDINATE or ball.xcor() >= MAX_X_COORDINATE
 
-    return False
+def ball_touches_up_or_down_wall(ball: Ball) -> bool:
+    return ball.ycor() >= MAX_Y_COORDINATE or ball.ycor() <= MIN_Y_COORDINATE
 
 screen = Screen()
 canvas = screen.getcanvas()
 left_paddle = Paddle()
 right_paddle = Paddle()
+ball = Ball(BALL_SPEED)
 scoreboard = Scoreboard()
-ball = Turtle(shape="circle")
-
-ball.penup()
-ball.color("white")
 
 scoreboard.goto(0, MAX_X_COORDINATE - 40)
-scoreboard.show_score()
 
 screen.setup(WIDTH, HEIGHT)
 screen.bgcolor("black")
@@ -59,37 +54,25 @@ screen.listen()
 position_paddles()
 draw_middle_line()
 
-x_direction = 1
-y_direction = 1
-
-
 while True:
-    ball.forward(3 * x_direction)
+    ball.move()
 
-    if ball_touches_wall(ball, "up"):
-        pass
-    elif ball_touches_wall(ball, "down"):
-        pass
+    paddle = right_paddle if ball.is_going_left() else left_paddle
+    if paddle.touches(ball):
+        ball.bounce_x()
+        continue
 
-    if x_direction == 1: # ball going to the right
-        if right_paddle.touches(ball):
-            x_direction *= -1
+    if ball_touches_up_or_down_wall(ball):
+        ball.bounce_y()
+        continue
 
-        if ball_touches_wall(ball, "right"):
+    if ball_touches_left_or_right_wall(ball):
+        if ball.is_going_left():
             scoreboard.left_paddle_score += 1
-            ball.goto(0, 0)
-            x_direction = random.choice([-1, 1])
-
-
-    elif x_direction == -1: # ball going to the left
-        if left_paddle.touches(ball):
-            x_direction *= -1
-
-        if ball_touches_wall(ball, "left"):
+        else:
             scoreboard.right_paddle_score += 1
-            ball.goto(0, 0)
-            x_direction = random.choice([-1, 1])
+        ball.reset()
+        scoreboard.show_score()
 
-
-    scoreboard.show_score()
     screen.update()
+

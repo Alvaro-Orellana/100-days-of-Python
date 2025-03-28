@@ -27,6 +27,6 @@ class Paddle:
 
     def touches(self, object: Turtle) -> bool:
         for segment in self.body:
-            if segment.distance(object) < 5:
+            if segment.distance(object) < 10:
                 return True
         return False

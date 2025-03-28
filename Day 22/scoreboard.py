@@ -10,6 +10,7 @@ class Scoreboard(Turtle):
         self.right_paddle_score = 0
         self.color("white")
         self.hideturtle()
+        self.show_score()
 
 
     def show_score(self):
