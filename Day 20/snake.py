@@ -4,34 +4,56 @@ class Snake:
 
     DIRECTIONS = {"right": 0, "up": 90, "left": 180, "down": 270} # turtle's module directions in degrees
 
-    def __init__(self, color: str="white", initial_number_of_cubes=3, square_width=20):
+    def __init__(self, color: str="white", number_of_segments=3, segment_width=20):
         self.body: list[Turtle] = []
         self.color: str = color
-        self.square_width: int = square_width
+        self.segment_width: int = segment_width
 
-        # create initial snake
-        for i in range(initial_number_of_cubes):
-            cube = Turtle("square")
-            cube.color(self.color)
-            cube.penup()
-            cube.backward(self.square_width * i) #puts the cubes horizontally next to each other
-            self.body.append(cube)
+        # Create head
+        head = Turtle("square")
+        head.color(self.color)
+        head.penup()
+        self.body.append(head)
+        self.head: Turtle = head
 
-        self.head: Turtle = self.body[0]
+        # Create tail
+        for i in range(number_of_segments-1):
+            new_segment = self.create_segment()
+            self.body.append(new_segment)
+
+    def create_segment(self):
+        """Use for growing the tail only, not the head. Because it assumes there exists at least
+            one segment before
+        """
+        if self.head is None: return
+        last_segment = self.body[-1]
+        new_segment = Turtle("square")
+
+        new_segment.color(self.color)
+        new_segment.penup()
+        new_segment.setheading(last_segment.heading())
+        new_segment.goto(last_segment.position())
+        new_segment.backward(self.segment_width)
+        return new_segment
 
     def move(self):
         """
-        First moves tail to the next cube's position, then moves the head.
+        First moves tail, shifting each segment to the next segment's position, then moves the head.
         Head is the first cube, tail is all the rest.
         """
-        # Move tail. Starts at the last cube, shifting each to the next cube's position.
+        # Move tail.
         tail_indices = range(1, len(self.body))
         for index in reversed(tail_indices):
-            next_cube = self.body[index - 1]
-            self.body[index].goto(x=next_cube.xcor(), y=next_cube.ycor())
+            next_segment = self.body[index - 1]
+            self.body[index].goto(next_segment.position())
 
         # Move head
-        self.head.forward(self.square_width)
+        self.head.forward(self.segment_width)
+
+    def grow_tail(self):
+       """Adds only one segment to the end of the snake."""
+       new_segment = self.create_segment()
+       self.body.append(new_segment)
 
     def turn_up(self):
         if not self.is_going_down(): self.turn("up")
@@ -51,7 +73,7 @@ class Snake:
     def head_edge_coordinate(self) -> float:
         # xcor() and ycor() are in the center of a shape.
         # so the square's edge is located on that point plus half the square's size
-        square_edge_offset = self.square_width / 2
+        square_edge_offset = self.segment_width / 2
 
         if self.is_going_up(): return self.head.ycor() + square_edge_offset
         elif self.is_going_down(): return self.head.ycor() - square_edge_offset
@@ -64,11 +86,4 @@ class Snake:
     def is_going_left(self) -> bool: return self.head.heading() == self.DIRECTIONS["left"]
     def is_going_right(self) -> bool: return self.head.heading() == self.DIRECTIONS["right"]
 
-    def grow_tail(self):
-        new_square = Turtle("square")
-        new_square.color(self.color)
-        new_square.penup()
-        new_square.goto(self.body[-1].xcor(), self.body[-1].ycor())
-        new_square.setheading(self.body[-1].heading())
-        new_square.backward(self.square_width)
-        self.body.append(new_square)
+

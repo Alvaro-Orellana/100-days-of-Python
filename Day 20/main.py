@@ -1,5 +1,6 @@
 from turtle import Screen, Turtle
 from snake import Snake
+from scoreboard import Scoreboard
 from time import sleep
 from random import randrange
 
@@ -9,13 +10,13 @@ MAX_Y_COORDINATE, MIN_Y_COORDINATE = SCREEN_HEIGHT // 2, -SCREEN_HEIGHT // 2
 DELAY_IN_SECONDS = 0.1
 
 def move_food_to_random_location(food: Turtle):
-    random_x = randrange(start=MIN_X_COORDINATE + snake.square_width,
-                         stop=MAX_X_COORDINATE + 1 - snake.square_width,
-                         step=snake.square_width)
+    random_x = randrange(start=MIN_X_COORDINATE + snake.segment_width,
+                         stop=MAX_X_COORDINATE + 1 - snake.segment_width,
+                         step=snake.segment_width)
 
-    random_y = randrange(start=MIN_Y_COORDINATE + snake.square_width,
-                         stop=MAX_Y_COORDINATE + 1 - snake.square_width,
-                         step=snake.square_width)
+    random_y = randrange(start=MIN_Y_COORDINATE + snake.segment_width,
+                         stop=MAX_Y_COORDINATE + 1 - snake.segment_width,
+                         step=snake.segment_width)
     food.goto(random_x, random_y)
 
 
@@ -41,10 +42,9 @@ def detect_tail_collision(snake: Snake) -> bool:
     return False
 
 # Variables
-score = 0
 snake = Snake()
 screen = Screen()
-pen = Turtle(visible=False)
+scoreboard = Scoreboard()
 food = Turtle("circle")
 
 # setup screen
@@ -58,11 +58,6 @@ screen.onkey(key="Down", fun=snake.turn_down)
 screen.onkey(key="Left", fun=snake.turn_left)
 screen.onkey(key="Right", fun=snake.turn_right)
 
-# setup pen
-pen.penup()
-pen.color("white")
-pen.goto(MIN_X_COORDINATE + 10, MIN_Y_COORDINATE + 10)  # Bottom-left with small offset
-
 #setup food
 food.color("blue")
 food.penup()
@@ -70,19 +65,15 @@ move_food_to_random_location(food)
 
 while True:
     if detect_walls_collision(snake) or detect_tail_collision(snake):
+        scoreboard.reset()
         break
     if detect_collision(snake.head, food):
-        score += 1
+        scoreboard.increase_score()
         move_food_to_random_location(food)
         snake.grow_tail()
 
     snake.move()
-    pen.clear()
-    pen.write(f"head x: {snake.head.xcor()} y: {snake.head.ycor()} | food x: {food.xcor()} y: {food.ycor()} \tscore: {score}")
     screen.update()
     sleep(DELAY_IN_SECONDS)
 
-screen.title("Game Over")
-pen.clear()
-pen.write(f"GAME OVER. Score: {score}")
 screen.mainloop()
