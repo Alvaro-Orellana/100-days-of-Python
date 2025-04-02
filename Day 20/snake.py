@@ -4,20 +4,23 @@ class Snake:
 
     DIRECTIONS = {"right": 0, "up": 90, "left": 180, "down": 270} # turtle's module directions in degrees
 
-    def __init__(self, color: str="white", number_of_segments=3, segment_width=20):
-        self.body: list[Turtle] = []
+    def __init__(self, color: str="white", segment_width=20, number_of_segments=3):
         self.color: str = color
         self.segment_width: int = segment_width
+        self.number_of_segments: int = number_of_segments
+        self.body: list[Turtle] = []
+        self.head: Turtle = None
+        self.create_inital_body()
 
+    def create_inital_body(self):
         # Create head
-        head = Turtle("square")
-        head.color(self.color)
-        head.penup()
-        self.body.append(head)
-        self.head: Turtle = head
+        self.head = Turtle("square")
+        self.head.color(self.color)
+        self.head.penup()
+        self.body.append(self.head)
 
         # Create tail
-        for i in range(number_of_segments-1):
+        for i in range(self.number_of_segments - 1):
             new_segment = self.create_segment()
             self.body.append(new_segment)
 
@@ -54,6 +57,12 @@ class Snake:
        """Adds only one segment to the end of the snake."""
        new_segment = self.create_segment()
        self.body.append(new_segment)
+
+    def reset(self):
+        for segment in self.body:
+            segment.goto(10000,10000)
+        self.body.clear()
+        self.create_inital_body()
 
     def turn_up(self):
         if not self.is_going_down(): self.turn("up")

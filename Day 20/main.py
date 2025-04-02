@@ -66,7 +66,10 @@ move_food_to_random_location(food)
 while True:
     if detect_walls_collision(snake) or detect_tail_collision(snake):
         scoreboard.reset()
-        break
+        snake.reset()
+        move_food_to_random_location(food)
+        sleep(2)
+
     if detect_collision(snake.head, food):
         scoreboard.increase_score()
         move_food_to_random_location(food)
@@ -75,5 +78,3 @@ while True:
     snake.move()
     screen.update()
     sleep(DELAY_IN_SECONDS)
-
-screen.mainloop()
