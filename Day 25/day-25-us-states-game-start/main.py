@@ -1,14 +1,11 @@
 import turtle as t
 import pandas
 
-# setup screen
+# setup screen and pen
 screen = t.Screen()
 screen.title("US States Guessing Game")
 screen.bgpic("blank_states_img.gif")
-
-# setup pen
-pen = t.Turtle()
-pen.hideturtle()
+pen = t.Turtle(visible=False)
 pen.penup()
 
 # load states data
@@ -20,13 +17,11 @@ while remaining_states_names:
     guess = t.textinput(f"{correct_guesses}/50 States Correct", "What's another state name?").title()
 
     if guess in remaining_states_names:
+        remaining_states_names.remove(guess)
         state_row = states_table[states_table.state == guess]
         pen.goto(state_row.x.item(), state_row.y.item())
         pen.write(guess, align="center")
-        remaining_states_names.remove(guess)
 
-    if guess == "Exit":
-        break
+    if guess == "Exit": break
 
 pandas.DataFrame(remaining_states_names, columns=["States"]).to_csv("states_to_learn.csv")
-screen.mainloop()
