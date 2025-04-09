@@ -9,30 +9,45 @@ FONT_NAME = "Courier"
 WORK_MINUTES = 25
 SHORT_BREAK_MINUTES = 5
 LONG_BREAK_MINUTES = 20
+reps = 0
+cancel_id = ""
 
 # ---------------------------- TIMER RESET ------------------------------- #
 def start_pressed():
-    pass
+    timer_label.config(text="Work")
+    timer()
 
 def reset_pressed():
-    pass
+    global cancel_id
+    global reps
+    window.after_cancel(cancel_id)
+    reps = 0
+    canvas.itemconfigure(timer_text, text="00:00")
+    timer_label.config(text="Timer")
+    check_label.config(text="")
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def timer():
-    count_down(seconds=WORK_MINUTES * 60)
-    count_down(seconds=SHORT_BREAK_MINUTES * 60)
-    #window.after(WORK_MINUTES*60, count_down, SHORT_BREAK_MINUTES * 60)
+    global reps
+    reps += 1
 
-    # update checks
-    check_label_text = check_label.cget("text")
-    check_label_text += "✓\n"
-    check_label.config(text=check_label_text)
+    if reps % 8 == 0:
+        count_down(seconds=LONG_BREAK_MINUTES * 60)
+    elif reps % 2 != 0:
+        count_down(seconds=WORK_MINUTES * 60)
+    else:
+        count_down(seconds=SHORT_BREAK_MINUTES * 60)
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def count_down(seconds):
+    global cancel_id
     if seconds >= 0:
         canvas.itemconfigure(timer_text, text=format_seconds(seconds)) # update label text
-        window.after(1000, count_down, seconds - 1)
+        cancel_id = window.after(3, count_down, seconds - 1)
+    else:
+        update_labels()
+        timer()
 
 
 def format_seconds(seconds: int) -> str:
@@ -42,6 +57,20 @@ def format_seconds(seconds: int) -> str:
     seconds_remaining = str(seconds_remaining) if seconds_remaining > 9 else "0" + str(seconds_remaining)
 
     return minutes_remaining + ":" + seconds_remaining
+
+def update_labels():
+    global reps
+    if reps % 8 == 0:
+        reset_pressed()
+    elif reps % 2 != 0:
+        check_label_text = check_label.cget("text")
+        check_label_text += "✓"
+        check_label.config(text=check_label_text)
+        timer_label.config(text="Break")
+    else:
+        timer_label.config(text="Work")
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = tk.Tk()
 window.title("Pomodoro")
@@ -63,5 +92,4 @@ start_button.grid(row=2, column=0)
 reset_button.grid(row=2, column=2)
 check_label.grid(row=3, column=1)
 
-timer()
 window.mainloop()
