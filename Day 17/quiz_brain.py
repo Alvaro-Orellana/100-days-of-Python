@@ -2,24 +2,26 @@ from typing import Optional
 from question_model import Question
 
 class QuizBrain:
-    def __init__(self, question_list: list[Question]):
-        self.question_list = question_list
-        self.next_question: Optional[Question] = question_list[0]
+    def __init__(self, questions: list[Question]):
+        self.questions = questions
+        self.current_question: Optional[Question] = questions[0]
         self.score = 0
 
     def get_question(self) -> Optional[Question]:
-        question = self.next_question
         try:
-            current_index = self.question_list.index(question)
-            self.next_question = self.question_list[current_index + 1]
-        except ValueError:
+            # Get index of the next question and update current_question with it
+            current_index = self.questions.index(self.current_question)
+            current_question = self.current_question
+            self.current_question = self.questions[current_index + 1]
+            return current_question
+
+        except (ValueError, IndexError):
             return None
 
-        return question
 
 
     def get_final_score(self) -> str:
-        return f"{self.score}/{len(self.question_list)}"
+        return f"{self.score}/{len(self.questions)}"
 
     def get_user_answer(self) -> str:
-        return input(f"Q.{self.question_number} {self.next_question.question}. (True/False)?: ").lower()
+        return input(f"Q.{self.question_number} {self.current_question.question}. (True/False)?: ").lower()
