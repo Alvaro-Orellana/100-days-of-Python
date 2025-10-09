@@ -4,10 +4,12 @@
 #Save the letters in the folder "ReadyToSend".
     
 #Hint1: This method will help you: https://www.w3schools.com/python/ref_file_readlines.asp
-letter = open("Input/Letters/starting_letter.txt").read()
-for name in open("Input/Names/invited_names.txt").readlines():
-    letter_with_name = letter.replace("[name]", name.strip())
+
+starting_letter = open("Input/Letters/starting_letter.txt").read()
+people_invited = open("Input/Names/invited_names.txt").readlines()
+
+for name in people_invited:
+    letter_with_name = starting_letter.replace("[name]", name.strip())
     destination_file = open(f"Output/ReadyToSend/letter_for_{name.strip()}.txt", "w")
     destination_file.write(letter_with_name)
-
 

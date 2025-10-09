@@ -10,15 +10,17 @@ MAX_Y_COORDINATE, MIN_Y_COORDINATE = SCREEN_HEIGHT // 2, -SCREEN_HEIGHT // 2
 DELAY_IN_SECONDS = 0.1
 
 def move_food_to_random_location(food: Turtle):
-    random_x = randrange(start=MIN_X_COORDINATE + snake.segment_width,
-                         stop=MAX_X_COORDINATE + 1 - snake.segment_width,
-                         step=snake.segment_width)
-
-    random_y = randrange(start=MIN_Y_COORDINATE + snake.segment_width,
-                         stop=MAX_Y_COORDINATE + 1 - snake.segment_width,
-                         step=snake.segment_width)
+    random_x = randrange(
+        start=MIN_X_COORDINATE + snake.segment_width,
+        stop=MAX_X_COORDINATE + 1 - snake.segment_width,
+        step=snake.segment_width
+    )
+    random_y = randrange(
+        start=MIN_Y_COORDINATE + snake.segment_width,
+        stop=MAX_Y_COORDINATE + 1 - snake.segment_width,
+        step=snake.segment_width
+    )
     food.goto(random_x, random_y)
-
 
 def detect_walls_collision(snake: Snake) -> bool:
     """Returns true if a collision is detected, otherwise false."""

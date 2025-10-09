@@ -1,20 +1,17 @@
-import turtle
+from turtle import Turtle
 
 FONT = ("Arial", 24, "bold")
 
 def read_max_score():
-    file = open("data.txt")
-    max_score = file.read()
-    file.close()
-    return int(max_score)
+    with open("data.txt") as file:
+        max_score = file.read()
+        return int(max_score)
 
 def write_max_score(max_score: int):
-    file = open("data.txt", "w")
-    file.write(str(max_score))
-    file.close()
+    with open("data.txt", "w") as file:
+        file.write(str(max_score))
 
-
-class Scoreboard(turtle.Turtle):
+class Scoreboard(Turtle):
     def __init__(self):
         super().__init__(visible=False)
         self.score = 0

@@ -10,9 +10,9 @@ class Snake:
         self.number_of_segments: int = number_of_segments
         self.body: list[Turtle] = []
         self.head: Turtle = None
-        self.create_inital_body()
+        self.create_initial_body()
 
-    def create_inital_body(self):
+    def create_initial_body(self):
         # Create head
         self.head = Turtle("square")
         self.head.color(self.color)
@@ -20,18 +20,16 @@ class Snake:
         self.body.append(self.head)
 
         # Create tail
-        for i in range(self.number_of_segments - 1):
+        for i in range(self.number_of_segments):
             new_segment = self.create_segment()
             self.body.append(new_segment)
 
     def create_segment(self):
-        """Use for growing the tail only, not the head. Because it assumes there exists at least
-            one segment before
-        """
+        """Use for growing the tail only, not the head. Because it assumes there exists at least one segment before """
         if self.head is None: return
+
         last_segment = self.body[-1]
         new_segment = Turtle("square")
-
         new_segment.color(self.color)
         new_segment.penup()
         new_segment.setheading(last_segment.heading())
@@ -62,7 +60,7 @@ class Snake:
         for segment in self.body:
             segment.goto(10000,10000)
         self.body.clear()
-        self.create_inital_body()
+        self.create_initial_body()
 
     def turn_up(self):
         if not self.is_going_down(): self.turn("up")

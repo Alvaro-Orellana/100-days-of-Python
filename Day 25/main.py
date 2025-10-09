@@ -43,8 +43,8 @@ def to_fahrenheit(temperature_in_celsius):
 def squirrels_data():
     squirrels_table = pandas.read_csv("2018_Central_Park_Squirrel_Census_-_Squirrel_Data.csv")
 
-    gray_squirrels_rows = squirrels_table[squirrels_table["Primary Fur Color"] == "Gray"]
-    black_squirrels_rows = squirrels_table[squirrels_table["Primary Fur Color"] == "Black"]
+    gray_squirrels_rows     = squirrels_table[squirrels_table["Primary Fur Color"] == "Gray"]
+    black_squirrels_rows    = squirrels_table[squirrels_table["Primary Fur Color"] == "Black"]
     cinnamon_squirrels_rows = squirrels_table[squirrels_table["Primary Fur Color"] == "Cinnamon"]
 
     squirrels_color_dict = {
@@ -58,3 +58,4 @@ def squirrels_data():
 #with_pandas()
 #create_dataframe()
 squirrels_data()
+print("hi")

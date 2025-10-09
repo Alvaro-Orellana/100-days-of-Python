@@ -1,5 +1,5 @@
 from turtle import Turtle, Screen
-import random
+from random import random, choice
 
 def draw_square(turtle: Turtle, distance):
     for _ in range(4):
@@ -7,9 +7,7 @@ def draw_square(turtle: Turtle, distance):
         turtle.right(90)
 
 def random_color():
-    r = random.random()
-    g = random.random()
-    b = random.random()
+    r, g, b = random(), random(), random()
     turtle.pencolor((r, g, b))
 
 def draw_shape(number_of_sides):
@@ -27,7 +25,7 @@ def random_walk():
     turtle.speed(3)
     while True:
         random_color()
-        random_angle = random.choice([0,90,180,270])
+        random_angle = choice([0,90,180,270])
         turtle.setheading(random_angle)
         turtle.forward(30)
 

@@ -14,7 +14,7 @@ remaining_states_names = states_table.state.to_list()
 
 while remaining_states_names:
     correct_guesses = 50 - len(remaining_states_names)
-    guess = t.textinput(f"{correct_guesses}/50 States Correct", "What's another state name?").title()
+    guess = t.textinput(f"{correct_guesses} of 50 States Correct", "What's another state name?").title()
 
     if guess in remaining_states_names:
         remaining_states_names.remove(guess)

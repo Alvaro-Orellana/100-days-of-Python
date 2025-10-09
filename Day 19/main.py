@@ -6,7 +6,8 @@ HEIGHT = 600
 rainbow_colors = ["red", "orange", "yellow", "green", "blue", "violet"]
 NUMBER_OF_TURTLES = len(rainbow_colors)
 turtles = []
-
+race_is_finished = False
+winner = None
 screen = Screen()
 screen.setup(width=WIDTH, height=HEIGHT)
 
@@ -17,9 +18,6 @@ for i in range(NUMBER_OF_TURTLES):
     turtle.goto(x=(-WIDTH / 2) + 40, y=(-HEIGHT / 2) + 70 * (i+1))
     turtles.append(turtle)
 
-
-race_is_finished = False
-winner = None
 user_bet = screen.textinput("Choose a turtle", "enter a color to place your bet")
 
 while not race_is_finished:
@@ -31,5 +29,4 @@ while not race_is_finished:
         turtle.forward(random.randint(1, 10))
 
 screen.title(f"the winner is {winner}")
-
 screen.mainloop()

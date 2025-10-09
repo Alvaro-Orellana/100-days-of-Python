@@ -25,8 +25,6 @@ def reset_pressed():
     canvas.itemconfigure(timer_text, text="00:00")
     timer_label.config(text="Timer")
     check_label.config(text="")
-
-
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def timer():
     global reps
@@ -49,7 +47,6 @@ def count_down(seconds):
         update_labels()
         timer()
 
-
 def format_seconds(seconds: int) -> str:
     minutes_remaining, seconds_remaining = divmod(seconds, 60)
 
@@ -67,8 +64,10 @@ def update_labels():
         check_label_text += "✓"
         check_label.config(text=check_label_text)
         timer_label.config(text="Break")
+        timer_label.config(fg=PINK)
     else:
         timer_label.config(text="Work")
+        timer_label.config(fg=GREEN)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
