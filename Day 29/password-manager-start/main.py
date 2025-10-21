@@ -7,8 +7,6 @@ print("Welcome to Password Manager!")
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
-    password_textfield.delete(0, tk.END)
-
     letters = string.ascii_letters
     numbers = string.digits
     symbols = "!#$%&()*+"
@@ -19,7 +17,11 @@ def generate_password():
 
     password = random.choices(letters, k=nr_letters) + random.choices(symbols, k=nr_symbols) + random.choices(numbers, k=nr_numbers)
     random.shuffle(password)
-    password_textfield.insert(tk.END, "".join(password))
+    password = "".join(password)
+
+    # delete previous text if there was any
+    password_textfield.delete(0, tk.END)
+    password_textfield.insert(tk.END, password)
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save():
     website = website_textfield.get()
