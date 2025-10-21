@@ -1,7 +1,9 @@
 import  tkinter as tk
+from json import JSONDecodeError
 from tkinter import messagebox
 import random
 import string
+import json
 
 print("Welcome to Password Manager!")
 
@@ -31,19 +33,37 @@ def save():
     if website == "" or email == "" or password == "":
         messagebox.showerror(title="Error", message="Please fill all fields")
         return
+    try:
+        with open("data.json", "r") as file:
+            json_data = json.load(file)
+    except (FileNotFoundError, JSONDecodeError):
+        json_data = {}
+    finally:
+        website_textfield.delete(0, tk.END)
+        password_textfield.delete(0, tk.END)
 
-    is_ok = messagebox.askokcancel(title="Save Password",
-                                   message=f"These are your details entered:\n" f"Password: {password}\n" f"Email: {email}\n")
+    with open("data.json", "w") as file:
+        json_data.update(
+            { website: {"email": email, "password": password} }
+        )
+        json.dump(json_data, file, indent=4)
 
-    if is_ok:
-        with open("data.txt", "a") as file:
-            file.write(f"{website}, {email}, {password}\n")
+def search():
+    try:
+        with open("data.json", "r") as file:
+            json_data = json.load(file)
+            website = website_textfield.get()
+            email = json_data[website]["email"]
+            password = json_data[website]["password"]
 
-    website_textfield.delete(0, tk.END)
-    password_textfield.delete(0, tk.END)
+            messagebox.showinfo(title="Success", message=f"Credentials for {website}\nEmail: {email}, Password: {password}")
+    except (FileNotFoundError, JSONDecodeError):
+        messagebox.showerror(title="Error", message="No data file found")
+    except KeyError:
+        messagebox.showerror(title="Error", message=f"No details exist for website {website_textfield.get()}")
 
 
-# ---------------------------- UI SETUP ------------------------------- #
+    # ---------------------------- UI SETUP ------------------------------- #
 
 window = tk.Tk()
 window.config(padx=50, pady=50)
@@ -64,6 +84,7 @@ username_textfield = tk.Entry(width=35)
 username_textfield.insert(0, "somemail@gmail.com")
 password_textfield = tk.Entry(width=21)
 
+search_button = tk.Button(text="Search", command=search)
 generate_password_button = tk.Button(text="Generate Password",command=generate_password)
 add_button = tk.Button(text="Add", width=36, command=save)
 
@@ -74,10 +95,11 @@ website_label.grid(row=1, column=0)
 username_label.grid(row=2, column=0)
 password_label.grid(row=3, column=0)
 
-website_textfield.grid(row=1, column=1, columnspan=2)
-username_textfield.grid(row=2, column=1, columnspan=2)
+website_textfield.grid(row=1, column=1)
+username_textfield.grid(row=2, column=1)
 password_textfield.grid(row=3, column=1)
 
+search_button.grid(row=1, column=2)
 generate_password_button.grid(row=3, column=2)
 add_button.grid(row=4, column=1)
 
