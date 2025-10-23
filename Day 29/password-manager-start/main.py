@@ -1,5 +1,4 @@
 import  tkinter as tk
-from json import JSONDecodeError
 from tkinter import messagebox
 import random
 import string
@@ -8,22 +7,26 @@ import json
 print("Welcome to Password Manager!")
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def insert_password():
+    # delete previous text if there was any
+    password_textfield.delete(0, tk.END)
+
+    password = generate_password()
+    password_textfield.insert(tk.END, password)
+
 def generate_password():
     letters = string.ascii_letters
     numbers = string.digits
     symbols = "!#$%&()*+"
 
-    nr_letters = random.randint(8, 10)
-    nr_symbols = random.randint(2, 4)
-    nr_numbers = random.randint(2, 4)
+    n_letters = random.randint(8, 10)
+    n_symbols = random.randint(2, 4)
+    n_numbers = random.randint(2, 4)
 
-    password = random.choices(letters, k=nr_letters) + random.choices(symbols, k=nr_symbols) + random.choices(numbers, k=nr_numbers)
+    password = random.choices(letters, k=n_letters) + random.choices(symbols, k=n_symbols) + random.choices(numbers, k=n_numbers)
     random.shuffle(password)
-    password = "".join(password)
+    return "".join(password)
 
-    # delete previous text if there was any
-    password_textfield.delete(0, tk.END)
-    password_textfield.insert(tk.END, password)
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save():
     website = website_textfield.get()
@@ -36,12 +39,11 @@ def save():
     try:
         with open("data.json", "r") as file:
             json_data = json.load(file)
-    except (FileNotFoundError, JSONDecodeError):
+    except FileNotFoundError:
         json_data = {}
-    finally:
-        website_textfield.delete(0, tk.END)
-        password_textfield.delete(0, tk.END)
 
+    website_textfield.delete(0, tk.END)
+    password_textfield.delete(0, tk.END)
     with open("data.json", "w") as file:
         json_data.update(
             { website: {"email": email, "password": password} }
@@ -57,10 +59,10 @@ def search():
             password = json_data[website]["password"]
 
             messagebox.showinfo(title="Success", message=f"Credentials for {website}\nEmail: {email}, Password: {password}")
-    except (FileNotFoundError, JSONDecodeError):
+    except FileNotFoundError:
         messagebox.showerror(title="Error", message="No data file found")
     except KeyError:
-        messagebox.showerror(title="Error", message=f"No details exist for website {website_textfield.get()}")
+        messagebox.showerror(title="Error", message=f"No details exist for website {website}")
 
 
     # ---------------------------- UI SETUP ------------------------------- #
@@ -85,7 +87,7 @@ username_textfield.insert(0, "somemail@gmail.com")
 password_textfield = tk.Entry(width=21)
 
 search_button = tk.Button(text="Search", command=search)
-generate_password_button = tk.Button(text="Generate Password",command=generate_password)
+generate_password_button = tk.Button(text="Generate Password",command=insert_password)
 add_button = tk.Button(text="Add", width=36, command=save)
 
 # UI positioning
