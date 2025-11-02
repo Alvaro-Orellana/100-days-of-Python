@@ -1,5 +1,6 @@
 import smtplib
 import schedule
+import time
 
 # Estos son los que cambian como quieran
 email_destino="alvaro.hernan.orellana@gmail.com"
@@ -13,8 +14,8 @@ contraseña = "kagf zprj ctit xjyw"
 with smtplib.SMTP("smtp.gmail.com") as connection:
     connection.starttls()
     connection.login(email_origen, contraseña)
+    schedule.every(1).second.do(lambda : connection.sendmail(email_origen, email_destino, mensaje))
 
-    schedule.every(numero_de_emails_a_enviar).second.do(
-        lambda : connection.sendmail(email_origen, email_destino, mensaje)
-    )
-    schedule.run_pending()
+    for _ in range(numero_de_emails_a_enviar):
+        schedule.run_pending()
+        time.sleep(1)
