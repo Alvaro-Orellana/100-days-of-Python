@@ -31,7 +31,7 @@ def with_pandas():
 def create_dataframe():
     dict_example = {
         "names": ["julieta", "catalina", "coté"],
-        "ages": [34, 35, 35]
+        "ages": [35, 36, 35]
     }
     dataframe = pandas.DataFrame(dict_example)
     dataframe.to_csv("datos.csv")
